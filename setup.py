@@ -29,7 +29,6 @@ def run_command(command, cwd=None, env=None):
 # For building Malmo
 class BuildMalmo(build):
     def run(self):
-
         if os.path.exists('minecraft_py/Malmo'):
             print("Removing existing Malmo folder...")
             shutil.rmtree('minecraft_py/Malmo')
@@ -59,25 +58,23 @@ class BuildMalmo(build):
         print("Moving MalmoPython.so...")
         shutil.move("minecraft_py/Malmo/Python_Examples/MalmoPython.so", "minecraft_py")
 
-        build.run(self)
-
-class InstallMalmo(install):
-    def run(self):
-
-        install.run(self)
-
+        '''
         print("Precompiling...")
         run_command("./gradlew setupDecompWorkspace", cwd='minecraft_py/Malmo/Minecraft', env={'MALMO_XSD_PATH': 'minecraft_py/Malmo/Schemas'})
         run_command("./gradlew build", cwd='minecraft_py/Malmo/Minecraft', env={'MALMO_XSD_PATH': 'minecraft_py/Malmo/Schemas'})
+        '''
+
+        build.run(self)
+
 
 setup(name='minecraft-py',
-      version='0.0.1',
+      version='0.0.2',
       description='Python bindings to Malmo',
       url='https://github.com/tambetm/minecraft-py',
       author='Tambet Matiisen',
       author_email='tambet.matiisen@gmail.com',
       packages=find_packages(),
-      cmdclass={'build': BuildMalmo, 'install': InstallMalmo},
+      cmdclass={'build': BuildMalmo},
       include_package_data=True,
       zip_safe=False
 )

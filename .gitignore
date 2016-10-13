@@ -1,7 +1,7 @@
+minecraft_py/Malmo
+minecraft_py/MalmoPython.so
 build
 dist
 *.egg-info
-minecraft_py/Malmo
-minecraft_py/MalmoPython.so
 *.pyc
 *~
