@@ -7,7 +7,11 @@ import signal
 logger = logging.getLogger(__name__)
 
 malmo_dir = os.path.join(os.path.dirname(__file__), 'Malmo')
+malmo_xsd_path = os.path.join(malmo_dir, 'Schemas')
 mc_command = os.path.join(malmo_dir, 'Minecraft/launchClient.sh')
+
+def prepare_environment():
+    os.environ['MALMO_XSD_PATH'] = malmo_xsd_path
 
 def start(port=None):
     cmd = mc_command
