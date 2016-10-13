@@ -1,3 +1,5 @@
+from __future__ import print_function
+from future.moves.urllib.request import urlretrieve
 import os
 import sys
 import stat
@@ -30,28 +32,28 @@ def run_command(command, cwd=None, env=None):
 class BuildMalmo(DistutilsBuild):
     def run(self):
         if os.path.exists('minecraft_py/Malmo'):
-            print "Removing existing folder..."
+            print("Removing existing folder...")
             shutil.rmtree('minecraft_py/Malmo')
 
         # TODO: should detect the OS?
-        print "Downloading Malmo..."
-        urllib.urlretrieve('https://github.com/Microsoft/malmo/releases/download/0.17.0/Malmo-0.17.0-Linux-Ubuntu-14.04-64bit.zip', 'Malmo.zip')
+        print("Downloading Malmo...")
+        urlretrieve('https://github.com/Microsoft/malmo/releases/download/0.17.0/Malmo-0.17.0-Linux-Ubuntu-14.04-64bit.zip', 'Malmo.zip')
         
-        print "Unzipping Malmo..."
+        print("Unzipping Malmo...")
         zip = zipfile.ZipFile('Malmo.zip')
         zip.extractall('minecraft_py')
         zip.close()
         
-        print "Removing zip..."
+        print("Removing zip...")
         os.remove('Malmo.zip')
-        print "Renaming folder..."
+        print("Renaming folder...")
         os.rename('minecraft_py/Malmo-0.17.0-Linux-Ubuntu-14.04-64bit', 'minecraft_py/Malmo')
 
-        print "Changing permissions..."
+        print("Changing permissions...")
         make_executable('minecraft_py/Malmo/Minecraft/gradlew')
         make_executable('minecraft_py/Malmo/Minecraft/launchClient.sh')
 
-        print "Precompiling..."
+        print("Precompiling...")
         run_command("./gradlew setupDecompWorkspace", cwd='minecraft_py/Malmo/Minecraft', env={'MALMO_XSD_PATH': 'minecraft_py/Malmo/Schemas'})
         run_command("./gradlew build", cwd='minecraft_py/Malmo/Minecraft', env={'MALMO_XSD_PATH': 'minecraft_py/Malmo/Schemas'})
 

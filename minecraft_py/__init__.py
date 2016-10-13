@@ -13,7 +13,7 @@ def start(port=None):
     cmd = mc_command
     if port:
         cmd += " -port %d" % port
-	logger.info("Starting Minecraft process: " + cmd)
+    logger.info("Starting Minecraft process: " + cmd)
     FNULL = open(os.devnull, 'w')
     args = shlex.split(cmd)
     proc = subprocess.Popen(args,
@@ -27,7 +27,7 @@ def start(port=None):
         logger.debug(line)
         if not line:
             raise EOFError("Minecraft process finished unexpectedly")
-        if "CLIENT enter state: DORMANT" in line:
+        if b"CLIENT enter state: DORMANT" in line:
             break
     logger.info("Minecraft process ready")
     # supress entire output, otherwise the subprocess will block
