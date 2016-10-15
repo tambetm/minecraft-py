@@ -32,7 +32,7 @@ minecraft_py.stop(proc)
 ## Usage
 
 `minecraft_py` module exposes following functions:
- * `start(port=None)` - start a new Minecraft process. If port argument is given, it determines the port that Malmo is going to listen, otherwise the first free port starting from 10000 is used. Returns process object and port.
+ * `proc, port = start(port=None)` - start a new Minecraft process. If port argument is given, it determines the port that Malmo is going to listen, otherwise the first free port starting from 10000 is used. Returns process object and port.
  * `stop(proc)` - stops Minecraft started previously with `start()`. Sends `SIGTERM` to entire process group.
  
 In addition it adds `MalmoPython` module to `PYTHONPATH` that can be used to communicate with Minecraft process. `MalmoPython` API follows the [Malmo C++ API](http://microsoft.github.io/malmo/0.17.0/Documentation/annotated.html). You can also check the [tutorial](http://microsoft.github.io/malmo/0.17.0/Python_Examples/Tutorial.pdf) and [examples](https://github.com/Microsoft/malmo/tree/master/Malmo/samples/Python_examples).
