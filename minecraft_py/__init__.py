@@ -1,4 +1,5 @@
 import os
+import sys
 import shlex
 import logging
 import subprocess
@@ -7,11 +8,13 @@ import signal
 logger = logging.getLogger(__name__)
 
 malmo_dir = os.path.join(os.path.dirname(__file__), 'Malmo')
-malmo_xsd_path = os.path.join(malmo_dir, 'Schemas')
 mc_command = os.path.join(malmo_dir, 'Minecraft/launchClient.sh')
 
-def prepare_environment():
-    os.environ['MALMO_XSD_PATH'] = malmo_xsd_path
+malmo_xsd_path = os.path.join(malmo_dir, 'Schemas')
+os.environ['MALMO_XSD_PATH'] = malmo_xsd_path
+
+malmo_python_path = os.path.join(malmo_dir, 'Python_Examples')
+sys.path.append(malmo_python_path)
 
 def start(port=None):
     cmd = mc_command
