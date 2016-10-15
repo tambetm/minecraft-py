@@ -28,9 +28,10 @@ class BuildMalmo(build):
         bits, linkage = platform.architecture()
         if system == 'Linux':
             dist, version, vername = platform.linux_distribution()
-            url = 'https://github.com/Microsoft/malmo/releases/download/0.17.0/Malmo-0.17.0-{}-{}-{}-{}.zip'.format(system, dist, version, bits)
+            folder = 'Malmo-0.17.0-{}-{}-{}-{}'.format(system, dist, version, bits)
         else:
-            url = 'https://github.com/Microsoft/malmo/releases/download/0.17.0/Malmo-0.17.0-{}-{}.zip'.format(system, bits)
+            folder = 'Malmo-0.17.0-{}-{}'.format(system, bits)
+        url = 'https://github.com/Microsoft/malmo/releases/download/0.17.0/{}.zip'.format(folder)
 
         print("Downloading Malmo...")
         urlretrieve(url, 'Malmo.zip')
@@ -43,7 +44,7 @@ class BuildMalmo(build):
         print("Removing zip...")
         os.remove('Malmo.zip')
         print("Renaming folder...")
-        os.rename('minecraft_py/Malmo-0.17.0-Linux-Ubuntu-14.04-64bit', 'minecraft_py/Malmo')
+        os.rename(os.path.join('minecraft_py', folder), 'minecraft_py/Malmo')
 
         print("Changing permissions...")
         make_executable('minecraft_py/Malmo/Minecraft/gradlew')
