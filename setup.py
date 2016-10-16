@@ -62,6 +62,7 @@ setup(name='minecraft-py',
       packages=find_packages(),
       cmdclass={'build_ext': BuildMalmo},
       setup_requires=['future'],
+      install_requires=['psutil'],
       include_package_data=True,
       zip_safe=False
 )

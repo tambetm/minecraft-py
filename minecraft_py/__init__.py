@@ -6,15 +6,17 @@ import subprocess
 import signal
 import socket
 import platform
+import psutil
 
 logger = logging.getLogger(__name__)
 
 # determine Malmo location and executable name
 malmo_dir = os.path.join(os.path.dirname(__file__), 'Malmo')
-if sys.platform.startswith('win'):
-    mc_command = os.path.join(malmo_dir, 'Minecraft', 'launchClient.bat')
+minecraft_dir = os.path.join(malmo_dir, 'Minecraft')
+if platform.system() == 'Windows':
+    mc_command = os.path.join(minecraft_dir, 'launchClient.bat')
 else:
-    mc_command = os.path.join(malmo_dir, 'Minecraft', 'launchClient.sh')
+    mc_command = os.path.join(minecraft_dir, 'launchClient.sh')
 
 # set MALMO_XSD_PATH environment variable
 malmo_xsd_path = os.path.join(malmo_dir, 'Schemas')
@@ -31,7 +33,7 @@ def is_port_taken(port, address='0.0.0.0'):
         s.bind((address, port))
         taken = False
     except socket.error as e:
-        if e.errno == 98:
+        if e.errno in [98, 10048]:
             taken = True
         else:
             raise e
@@ -49,12 +51,17 @@ def start(port=None):
     # start Minecraft process
     cmd = mc_command + " -port " + str(port)
     logger.info("Starting Minecraft process: " + cmd)
-    args = shlex.split(cmd)
-    proc = subprocess.Popen(args,
-            # pipe entire output
-            stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
-            # use process group, see http://stackoverflow.com/a/4791612/18576
-            preexec_fn=os.setsid)
+    if platform.system() == 'Windows':
+        proc = subprocess.Popen(cmd, cwd=minecraft_dir,
+                # pipe entire output
+                stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+    else:
+        args = shlex.split(cmd)
+        proc = subprocess.Popen(args, cwd=minecraft_dir,
+                # pipe entire output
+                stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
+                # use process group, see http://stackoverflow.com/a/4791612/18576
+                preexec_fn=os.setsid)
     # wait until Minecraft process has outputed "CLIENT enter state: DORMANT"
     while True:
         line = proc.stdout.readline()
@@ -71,6 +78,15 @@ def start(port=None):
     return proc, port
 
 def stop(proc):
-    # send SIGTERM to entire process group, see http://stackoverflow.com/a/4791612/18576
-    os.killpg(os.getpgid(proc.pid), signal.SIGTERM)
+    if platform.system() == 'Windows':
+        parent = psutil.Process(proc.pid)
+        children = parent.children(recursive=True)
+        for child in children:
+            child.kill()
+        psutil.wait_procs(children, timeout=5)
+        #parent.kill()
+        parent.wait(5)
+    else:
+        # send SIGTERM to entire process group, see http://stackoverflow.com/a/4791612/18576
+        os.killpg(os.getpgid(proc.pid), signal.SIGTERM)
     logger.info("Minecraft process terminated")
