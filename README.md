@@ -27,7 +27,7 @@ proc, port = minecraft_py.start()
 minecraft_py.stop(proc)
 ```
 
-  Basically Minecraft downloads and compiles everything on first start, this snippet just starts minecraft_py in debug mode, so you can see when Minecraft gets stuck. You can use similar snippet later to start and stop Minecraft process.
+  Basically Minecraft downloads and compiles everything on first start, this snippet just starts it in debug mode, so you can see if it gets stuck. You can use similar snippet later to start and stop the Minecraft process.
 
 ## Usage
 
