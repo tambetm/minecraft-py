@@ -39,4 +39,4 @@ In addition it adds `MalmoPython` module to `PYTHONPATH` that can be used to com
 
 ## Known issues
 
- * Python 3 is not supported as Microsoft doesn't provide precompiled binaries for Python 3.
+ * Python 3 is not supported as Microsoft doesn't provide precompiled binaries for Python 3. If you happen to be using Ubuntu, you can try installing precompiled [Ubuntu 14.04](https://github.com/tambetm/minecraft-py34-ubuntu1404) or [Ubuntu 16.04](https://github.com/tambetm/minecraft-py35-ubuntu1604) version.
