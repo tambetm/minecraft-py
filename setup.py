@@ -20,7 +20,7 @@ class BuildMalmo(build):
     def run(self):
         from future.moves.urllib.request import urlretrieve
 
-        malmo_ver = '0.18.0'
+        malmo_ver = '0.30.0'
 
         if os.path.exists('minecraft_py/Malmo'):
             print("Removing existing Malmo folder...")
@@ -30,9 +30,9 @@ class BuildMalmo(build):
         bits, linkage = platform.architecture()
         if system == 'Linux':
             dist, version, vername = platform.linux_distribution()
-            folder = 'Malmo-{}-{}-{}-{}-{}'.format(malmo_ver, system, dist, version, bits)
+            folder = 'Malmo-{}-{}-{}-{}-{}_withBoost'.format(malmo_ver, system, dist, version, bits)
         elif system == 'Darwin':
-            folder = 'Malmo-{}-Mac-{}'.format(malmo_ver, bits)
+            folder = 'Malmo-{}-Mac-{}_withBoost'.format(malmo_ver, bits)
         else:
             folder = 'Malmo-{}-{}-{}'.format(malmo_ver, system, bits)
         url = 'https://github.com/Microsoft/malmo/releases/download/{}/{}.zip'.format(malmo_ver, folder)
