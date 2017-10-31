@@ -10,21 +10,24 @@ import psutil
 
 logger = logging.getLogger(__name__)
 
-# determine Malmo location and executable name
-malmo_dir = os.path.join(os.path.dirname(__file__), 'Malmo')
+malmo_xsd_path = os.environ["MALMO_XSD_PATH"]
+malmo_dir = os.path.basename(malmo_xsd_path)
+
+# # determine Malmo location and executable name
+# malmo_dir = os.path.join(os.path.dirname(__file__), 'Malmo')
 minecraft_dir = os.path.join(malmo_dir, 'Minecraft')
 if platform.system() == 'Windows':
     mc_command = os.path.join(minecraft_dir, 'launchClient.bat')
 else:
     mc_command = os.path.join(minecraft_dir, 'launchClient.sh')
 
-# set MALMO_XSD_PATH environment variable
-malmo_xsd_path = os.path.join(malmo_dir, 'Schemas')
-os.environ['MALMO_XSD_PATH'] = malmo_xsd_path
+# # set MALMO_XSD_PATH environment variable
+# malmo_xsd_path = os.path.join(malmo_dir, 'Schemas')
+# os.environ['MALMO_XSD_PATH'] = malmo_xsd_path
 
-# add MalmoPython to PYTHONPATH
-malmo_python_path = os.path.join(malmo_dir, 'Python_Examples')
-sys.path.append(malmo_python_path)
+# # add MalmoPython to PYTHONPATH
+# malmo_python_path = os.path.join(malmo_dir, 'Python_Examples')
+# sys.path.append(malmo_python_path)
 
 def is_port_taken(port, address='0.0.0.0'):
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
