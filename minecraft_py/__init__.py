@@ -11,7 +11,7 @@ import psutil
 logger = logging.getLogger(__name__)
 
 malmo_xsd_path = os.environ["MALMO_XSD_PATH"]
-malmo_dir = os.path.basename(malmo_xsd_path)
+malmo_dir = os.path.dirname(malmo_xsd_path)
 
 # # determine Malmo location and executable name
 # malmo_dir = os.path.join(os.path.dirname(__file__), 'Malmo')
