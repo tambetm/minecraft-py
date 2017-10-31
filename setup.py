@@ -58,7 +58,7 @@ from setuptools import setup, find_packages
 
 
 setup(name='minecraft-py',
-      version='0.0.2.1',
+      version='0.0.2',
       description='Python bindings for Malmo',
       url='https://github.com/tambetm/minecraft-py',
       author='Tambet Matiisen',
