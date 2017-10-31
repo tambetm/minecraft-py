@@ -10,17 +10,23 @@ import psutil
 
 logger = logging.getLogger(__name__)
 
+# if a global Malmo installation exists, use that
+if "MALMO_XSD_PATH" in os.environ:
+    malmo_xsd_path = os.environ["MALMO_XSD_PATH"]
+    malmo_dir = os.path.dirname(malmo_xsd_path)
+# otherwise, use the local Malmo installation
+else:
+    malmo_dir = os.path.join(os.path.dirname(__file__), 'Malmo')
+    # set MALMO_XSD_PATH environment variable
+    malmo_xsd_path = os.path.join(malmo_dir, 'Schemas')
+    os.environ['MALMO_XSD_PATH'] = malmo_xsd_path
+
 # determine Malmo location and executable name
-malmo_dir = os.path.join(os.path.dirname(__file__), 'Malmo')
 minecraft_dir = os.path.join(malmo_dir, 'Minecraft')
 if platform.system() == 'Windows':
     mc_command = os.path.join(minecraft_dir, 'launchClient.bat')
 else:
     mc_command = os.path.join(minecraft_dir, 'launchClient.sh')
-
-# set MALMO_XSD_PATH environment variable
-malmo_xsd_path = os.path.join(malmo_dir, 'Schemas')
-os.environ['MALMO_XSD_PATH'] = malmo_xsd_path
 
 # add MalmoPython to PYTHONPATH
 malmo_python_path = os.path.join(malmo_dir, 'Python_Examples')

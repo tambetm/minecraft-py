@@ -18,6 +18,12 @@ def make_executable(path):
 # For building Malmo
 class BuildMalmo(build):
     def run(self):
+        # abort if a global Malmo installation already exists and just use that
+        if "MALMO_XSD_PATH" in os.environ:
+            build.run(self)
+            return
+
+        # otherwise, install a new local Malmo
         from future.moves.urllib.request import urlretrieve
 
         malmo_ver = '0.18.0'
@@ -39,12 +45,12 @@ class BuildMalmo(build):
 
         print("Downloading Malmo...")
         urlretrieve(url, 'Malmo.zip')
-        
+
         print("Unzipping Malmo...")
         zip = zipfile.ZipFile('Malmo.zip')
         zip.extractall('minecraft_py')
         zip.close()
-        
+
         print("Removing zip...")
         os.remove('Malmo.zip')
         print("Renaming folder...")
