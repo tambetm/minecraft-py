@@ -119,6 +119,8 @@ class BuildMalmo(build):
         print('Cleaning up build directory...')
         shutil.rmtree('betterfps')
 
+        shutil.copy('options.txt', 'minecraft_py/Malmo/Minecraft/run')
+
         # Prevent race condition
         time.sleep(0.2)
 
