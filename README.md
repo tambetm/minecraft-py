@@ -36,7 +36,3 @@ minecraft_py.stop(proc)
  * `stop(proc)` - stops Minecraft started previously with `start()`. Sends `SIGTERM` to entire process group.
  
 In addition it adds `MalmoPython` module to `PYTHONPATH` that can be used to communicate with Minecraft process. `MalmoPython` API follows the [Malmo C++ API](http://microsoft.github.io/malmo/0.17.0/Documentation/annotated.html). You can also check the [tutorial](http://microsoft.github.io/malmo/0.17.0/Python_Examples/Tutorial.pdf) and [examples](https://github.com/Microsoft/malmo/tree/master/Malmo/samples/Python_examples).
-
-## Known issues
-
- * Python 3 is not supported as Microsoft doesn't provide precompiled binaries for Python 3. If you happen to be using Ubuntu, you can try installing precompiled [Ubuntu 14.04](https://github.com/tambetm/minecraft-py34-ubuntu1404) or [Ubuntu 16.04](https://github.com/tambetm/minecraft-py35-ubuntu1604) version.
