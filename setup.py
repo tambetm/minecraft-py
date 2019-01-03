@@ -112,11 +112,15 @@ class BuildMalmo(build):
         os.makedirs('minecraft_py/Malmo/Minecraft/run/mods')
         shutil.copy('betterfps/build/libs/BetterFps-{}.jar'.format(betterfps_version), 'minecraft_py/Malmo/Minecraft/run/mods')
 
+        print("Copying betterfps config...")
+        os.makedirs('minecraft_py/Malmo/Minecraft/run/config')
+        shutil.copy('betterfps.json', 'minecraft_py/Malmo/Minecraft/run/config')
+
         print('Cleaning up build directory...')
         shutil.rmtree('betterfps')
 
         # Prevent race condition
-        time.sleep(0.1)
+        time.sleep(0.2)
 
         build.run(self)
 
