@@ -1,12 +1,14 @@
 from __future__ import print_function
 
 import os
-import stat
-import shutil
 import sys
+import stat
+import time
+import shutil
 import urllib
 import zipfile
 import platform
+import subprocess
 
 from distutils.command.build import build
 from setuptools.command.install import install
@@ -78,6 +80,44 @@ class BuildMalmo(build):
         make_executable('minecraft_py/Malmo/Minecraft/gradlew')
         make_executable('minecraft_py/Malmo/Minecraft/launchClient.sh')
 
+        # get betterfps
+        betterfps_version = '1.4.5'
+        betterfps_branch = '1.11'
+        print('Downloading BetterFps for MC {}...'.format(betterfps_branch))
+        urlretrieve('https://codeload.github.com/Guichaguri/BetterFps/zip/{}'.format(betterfps_branch), 'BetterFps.zip')
+
+        print("Unzipping BetterFps...")
+        zip = zipfile.ZipFile('BetterFps.zip')
+        zip.extractall('.')
+        zip.close()
+        os.remove('BetterFps.zip')
+        os.rename('BetterFps-{}'.format(betterfps_branch), 'betterfps')
+
+        print("Copying gradlew for BetterFps...")
+        shutil.copy('minecraft_py/Malmo/Minecraft/gradlew', 'betterfps')
+        shutil.copy('minecraft_py/Malmo/Minecraft/gradlew.bat', 'betterfps')
+        shutil.copytree('minecraft_py/Malmo/Minecraft/gradle', 'betterfps/gradle')
+
+        if platform.system() == 'Windows':
+            gradle = 'gradlew'
+        else:
+            gradle = './gradlew'
+
+        print('Building deobfuscated betterfps jar...')
+        os.chdir('betterfps')
+        os.system(gradle + ' jar')
+        os.chdir('..')
+
+        print('Copying betterfps jar to mods folder...')
+        os.makedirs('minecraft_py/Malmo/Minecraft/run/mods')
+        shutil.copy('betterfps/build/libs/BetterFps-{}.jar'.format(betterfps_version), 'minecraft_py/Malmo/Minecraft/run/mods')
+
+        print('Cleaning up build directory...')
+        shutil.rmtree('betterfps')
+
+        # Prevent race condition
+        time.sleep(0.1)
+
         build.run(self)
 
 
@@ -93,4 +133,4 @@ setup(name='minecraft-py',
       install_requires=['psutil'],
       include_package_data=True,
       zip_safe=False
-)
+      )
