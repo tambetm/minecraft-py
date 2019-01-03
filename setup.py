@@ -12,11 +12,14 @@ from distutils.command.build import build
 from setuptools.command.install import install
 from setuptools import setup, find_packages
 
+
 def make_executable(path):
     st = os.stat(path)
     os.chmod(path, st.st_mode | stat.S_IXUSR | stat.S_IXGRP | stat.S_IXOTH)
 
 # For building Malmo
+
+
 class BuildMalmo(build):
     def run(self):
         # abort if a global Malmo installation already exists and just use that
@@ -33,11 +36,16 @@ class BuildMalmo(build):
             print("Removing existing Malmo folder...")
             shutil.rmtree('minecraft_py/Malmo')
 
+        if os.path.exists('betterfps'):
+            print("Removing existing betterfps folder...")
+            shutil.rmtree('betterfps')
+
         system = platform.system()
         bits, linkage = platform.architecture()
         if system == 'Linux':
             dist, version, vername = platform.linux_distribution()
-            folder = 'Malmo-{}-{}-{}-{}-{}'.format(malmo_ver, system, dist, version, bits)
+            folder = 'Malmo-{}-{}-{}-{}-{}'.format(
+                malmo_ver, system, dist, version, bits)
         elif system == 'Darwin':
             folder = 'Malmo-{}-Mac-{}'.format(malmo_ver, bits)
         else:
@@ -45,11 +53,13 @@ class BuildMalmo(build):
 
         if malmo_ver in ['0.21.0', '0.22.0', '0.30.0']:
             folder += '_withBoost'
-        else:
+        elif int(malmo_ver.split('.')[1]) >= 31:
             # since 0.31.0
-            folder += '_withBoost_Python{}.{}'.format(sys.version_info[0], sys.version_info[1])
+            folder += '_withBoost_Python{}.{}'.format(
+                sys.version_info[0], sys.version_info[1])
 
-        url = 'https://github.com/Microsoft/malmo/releases/download/{}/{}.zip'.format(malmo_ver, folder)
+        url = 'https://github.com/Microsoft/malmo/releases/download/{}/{}.zip'.format(
+            malmo_ver, folder)
 
         print("Downloading Malmo...")
         urlretrieve(url, 'Malmo.zip')

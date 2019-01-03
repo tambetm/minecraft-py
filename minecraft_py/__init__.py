@@ -32,6 +32,7 @@ else:
 malmo_python_path = os.path.join(malmo_dir, 'Python_Examples')
 sys.path.append(malmo_python_path)
 
+
 def is_port_taken(port, address='0.0.0.0'):
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
@@ -47,6 +48,7 @@ def is_port_taken(port, address='0.0.0.0'):
     s.close()
     return taken
 
+
 def start(port=None):
     # if no port was given, find the first free port starting from 10000
     if not port:
@@ -59,19 +61,19 @@ def start(port=None):
     logger.info("Starting Minecraft process: " + cmd)
     if platform.system() == 'Windows':
         proc = subprocess.Popen(cmd, cwd=minecraft_dir,
-                # pipe entire output
-                stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+                                # pipe entire output
+                                stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
     else:
         args = shlex.split(cmd)
         proc = subprocess.Popen(args, cwd=minecraft_dir,
-                # pipe entire output
-                stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
-                # use process group, see http://stackoverflow.com/a/4791612/18576
-                preexec_fn=os.setsid)
+                                # pipe entire output
+                                stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
+                                # use process group, see http://stackoverflow.com/a/4791612/18576
+                                preexec_fn=os.setsid)
     # wait until Minecraft process has outputed "CLIENT enter state: DORMANT"
     while True:
         line = proc.stdout.readline()
-        logger.debug(line)
+        logger.debug(line.decode("utf-8").rstrip())
         if not line:
             raise EOFError("Minecraft process finished unexpectedly")
         if b"CLIENT enter state: DORMANT" in line:
@@ -83,6 +85,7 @@ def start(port=None):
     proc.stdout = FNULL
     return proc, port
 
+
 def stop(proc):
     if platform.system() == 'Windows':
         parent = psutil.Process(proc.pid)
@@ -90,7 +93,7 @@ def stop(proc):
         for child in children:
             child.kill()
         psutil.wait_procs(children, timeout=5)
-        #parent.kill()
+        # parent.kill()
         parent.wait(5)
     else:
         # send SIGTERM to entire process group, see http://stackoverflow.com/a/4791612/18576
