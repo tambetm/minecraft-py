@@ -3,6 +3,7 @@ from __future__ import print_function
 import os
 import stat
 import shutil
+import sys
 import urllib
 import zipfile
 import platform
@@ -26,7 +27,7 @@ class BuildMalmo(build):
         # otherwise, install a new local Malmo
         from future.moves.urllib.request import urlretrieve
 
-        malmo_ver = '0.18.0'
+        malmo_ver = '0.37.0'
 
         if os.path.exists('minecraft_py/Malmo'):
             print("Removing existing Malmo folder...")
@@ -41,6 +42,13 @@ class BuildMalmo(build):
             folder = 'Malmo-{}-Mac-{}'.format(malmo_ver, bits)
         else:
             folder = 'Malmo-{}-{}-{}'.format(malmo_ver, system, bits)
+
+        if malmo_ver in ['0.21.0', '0.22.0', '0.30.0']:
+            folder += '_withBoost'
+        else:
+            # since 0.31.0
+            folder += '_withBoost_Python{}.{}'.format(sys.version_info[0], sys.version_info[1])
+
         url = 'https://github.com/Microsoft/malmo/releases/download/{}/{}.zip'.format(malmo_ver, folder)
 
         print("Downloading Malmo...")
