@@ -82,43 +82,37 @@ class BuildMalmo(build):
 
         # get betterfps
         betterfps_version = '1.4.5'
-        betterfps_branch = '1.11'
-        print('Downloading BetterFps for MC {}...'.format(betterfps_branch))
-        urlretrieve('https://codeload.github.com/Guichaguri/BetterFps/zip/{}'.format(betterfps_branch), 'BetterFps.zip')
 
-        print("Unzipping BetterFps...")
-        zip = zipfile.ZipFile('BetterFps.zip')
-        zip.extractall('.')
-        zip.close()
-        os.remove('BetterFps.zip')
-        os.rename('BetterFps-{}'.format(betterfps_branch), 'betterfps')
-
+        # betterfps doesn't come with gradlew wrapper and we don't want to
+        # assume the user has gradle
         print("Copying gradlew for BetterFps...")
-        shutil.copy('minecraft_py/Malmo/Minecraft/gradlew', 'betterfps')
-        shutil.copy('minecraft_py/Malmo/Minecraft/gradlew.bat', 'betterfps')
-        shutil.copytree('minecraft_py/Malmo/Minecraft/gradle', 'betterfps/gradle')
 
+        # gradle wrapper jar
+        if not os.path.exists('BetterFps/gradle'):
+            shutil.copytree('minecraft_py/Malmo/Minecraft/gradle', 'BetterFps/gradle')
+
+        # gradlew script
         if platform.system() == 'Windows':
+            if not os.path.exists('BetterFps/gradlew.bat'):
+                shutil.copy('minecraft_py/Malmo/Minecraft/gradlew.bat', 'BetterFps')
             gradle = 'gradlew'
         else:
+            if not os.path.exists('BetterFps/gradlew'):
+                shutil.copy('minecraft_py/Malmo/Minecraft/gradlew', 'BetterFps')
             gradle = './gradlew'
 
         print('Building deobfuscated betterfps jar...')
-        os.chdir('betterfps')
+        os.chdir('BetterFps')
         os.system(gradle + ' jar')
         os.chdir('..')
 
         print('Copying betterfps jar to mods folder...')
         os.makedirs('minecraft_py/Malmo/Minecraft/run/mods')
-        shutil.copy('betterfps/build/libs/BetterFps-{}.jar'.format(betterfps_version), 'minecraft_py/Malmo/Minecraft/run/mods')
+        shutil.copy('BetterFps/build/libs/BetterFps-{}.jar'.format(betterfps_version), 'minecraft_py/Malmo/Minecraft/run/mods')
 
-        print("Copying betterfps config...")
+        print("Copying configs...")
         os.makedirs('minecraft_py/Malmo/Minecraft/run/config')
         shutil.copy('betterfps.json', 'minecraft_py/Malmo/Minecraft/run/config')
-
-        print('Cleaning up build directory...')
-        shutil.rmtree('betterfps')
-
         shutil.copy('options.txt', 'minecraft_py/Malmo/Minecraft/run')
 
         # Prevent race condition
