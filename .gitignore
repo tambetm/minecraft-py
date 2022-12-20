@@ -1,5 +1,6 @@
 minecraft_py/Malmo
 minecraft_py/MalmoPython.so
+betterfps/
 build
 dist
 *.egg-info
